@@ -1,10 +1,8 @@
+require('dotenv').config(); // THIS MUST BE LINE 1
 const express  = require('express');
 const cors     = require('cors');
-const dotenv   = require('dotenv');
 const admin    = require('firebase-admin');
 const serviceAccount = require('./serviceAccountKey.json');
-
-dotenv.config();
 
 // Initialize Firebase Admin
 admin.initializeApp({

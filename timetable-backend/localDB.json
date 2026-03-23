@@ -1,0 +1,59 @@
+{
+  "faculty": [
+    {
+      "id": "1774267753346",
+      "name": "faculty a",
+      "subjects_can_teach": [
+        "php"
+      ]
+    },
+    {
+      "id": "1774267781668",
+      "name": "jeevanya poojary",
+      "subjects_can_teach": [
+        "java"
+      ]
+    },
+    {
+      "id": "1774267909526",
+      "name": "Panku",
+      "subjects_can_teach": [
+        "java",
+        " Adv.java"
+      ]
+    },
+    {
+      "id": "1774268299953",
+      "name": "Theevandi",
+      "subjects_can_teach": [
+        "FDS",
+        " DAA"
+      ]
+    },
+    {
+      "id": "1774268322318",
+      "name": "Jayalaxmi",
+      "subjects_can_teach": [
+        "Digital Fluency"
+      ]
+    },
+    {
+      "id": "1774268339973",
+      "name": "Veena",
+      "subjects_can_teach": [
+        "Digital Marketing"
+      ]
+    },
+    {
+      "id": "1774268378044",
+      "name": "Suhana",
+      "subjects_can_teach": [
+        "Business "
+      ]
+    }
+  ],
+  "subjects": [],
+  "rooms": [],
+  "timeslots": [],
+  "timetable": null
+}
