@@ -1,1 +1,14 @@
-# NOVA-SHIELD
+Project Name: AutoSched Team name: NOVA SHIELD College name: Shree Devi College of Information Science
+
+Problem Statement: Creating academic timetables manually is time-consuming and prone to errors. Conflicts often occur between faculty, classrooms, and student batches. Managing multiple constraints makes scheduling complex and inefficient. Frequent changes and preferences further complicate the process. An automated system is needed to generate optimized, conflict-free timetables efficiently.
+
+Proposed Solution: The proposed solution is a web-based system that automatically generates timetables using a constraint-based scheduling approach. It takes inputs such as batches, subjects, faculty, rooms, and time slots, and defines rules to prevent conflicts. The system uses a backtracking algorithm with heuristics like MRV and forward checking to efficiently assign slots. Each assignment is validated in real time to ensure no overlaps between faculty, rooms, or batches. If a conflict occurs, the system backtracks and tries alternative combinations. The final output is a complete, optimized, and clash-free timetable displayed through an interactive interface.
+
+Innovation & Creativity: he project introduces an intelligent approach by modeling timetable generation as a Constraint Satisfaction Problem, enabling systematic and conflict-free scheduling. It combines backtracking with heuristics like MRV and forward checking to improve efficiency over traditional methods. The system dynamically adapts to different inputs and constraints, making it highly flexible and scalable. Its real-time conflict detection and correction mechanism reduces manual intervention significantly. The web-based interface ensures accessibility and ease of use for non-technical users. Overall, it transforms a traditionally manual process into a smart, automated, and optimized solution.
+
+
+Tech Stack and Complexity: The project is built as a web application using a modern and efficient tech stack. The frontend is developed with **React.js** and **Tailwind CSS** to create a responsive and user-friendly interface. The backend uses **Node.js with Express** to handle API requests and integrate the scheduling logic. The core timetable generation algorithm is implemented in the backend using JavaScript for fast execution. Data is managed using **JSON or MongoDB**, depending on scalability needs. This stack ensures rapid development, smooth performance, and easy deployment of the project.
+
+Setup Instructions: Prerequisites Install Node.js (v18 or above) Install MongoDB (Local or MongoDB Atlas account) Install Git Install VS Code Install Figma Install Expo GO Stable internet connection
+
+Clone the Repository Install dependencies Configure Environment Variables Start Backend Server Design UI Start Frontend Application Access application using Expo GO
