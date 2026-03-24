@@ -19,3 +19,5 @@ export const deleteTimeslot= (id)     => API.delete(`/timeslots/${id}`);
 
 export const generateTimetable = ()   => API.post('/timetable/generate');
 export const getTimetable      = ()   => API.get('/timetable');
+export const clearTimetable    = ()   => API.delete('/timetable/clear');
+export const resetSystem       = ()   => API.delete('/timetable/reset');
