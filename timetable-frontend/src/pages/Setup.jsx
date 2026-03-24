@@ -60,14 +60,17 @@ export default function Setup() {
         <table className="w-full text-sm">
           <tbody>
             {(tab === 'faculty'  ? faculty  : tab === 'subjects' ? subjects : rooms).map(item => (
-              <tr key={item._id} className="border-t border-gray-100">
+              <tr key={item.id} className="border-t border-gray-100">
                 <td className="px-4 py-3 text-gray-800">{item.name || item.room_number}</td>
                 <td className="px-4 py-3 text-gray-500">{item.batch || item.capacity || ''}</td>
                 <td className="px-4 py-3 text-right">
                   <button onClick={async () => {
-                    if (tab === 'faculty')  { await deleteFaculty(item._id);  getFaculty().then(r => setFaculty(r.data)); }
-                    if (tab === 'subjects') { await deleteSubject(item._id);  getSubjects().then(r => setSubjects(r.data)); }
-                    if (tab === 'rooms')    { await deleteRoom(item._id);     getRooms().then(r => setRooms(r.data)); }
+                      const id = item.id;
+                       console.log('ITEM:', item);        // ← add this line
+                      console.log('ID:', id);
+                    if (tab === 'faculty')  { await deleteFaculty(id);  getFaculty().then(r => setFaculty(r.data)); }
+                    if (tab === 'subjects') { await deleteSubject(id);  getSubjects().then(r => setSubjects(r.data)); }
+                    if (tab === 'rooms')    { await deleteRoom(id);     getRooms().then(r => setRooms(r.data)); }
                   }} className="text-red-500 hover:text-red-700 text-xs">Delete</button>
                 </td>
               </tr>

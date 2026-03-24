@@ -51,6 +51,7 @@ function runSolver(subjects, rooms, timeslots) {
           subject_name:  subject.name,
           faculty_name:  subject.faculty_id?.name,
           room_number:   room.room_number,
+          department:    subject.department || null,
           slot, room
         };
         assigned.push(entry);
@@ -80,7 +81,8 @@ function runSolver(subjects, rooms, timeslots) {
       end_time:     e.end_time,
       subject_name: e.subject_name,
       faculty_name: e.faculty_name,
-      room_number:  e.room_number
+      room_number:  e.room_number,
+      department:   e.department
     }))
   };
 }

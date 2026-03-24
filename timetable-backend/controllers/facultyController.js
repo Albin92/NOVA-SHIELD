@@ -1,24 +1,8 @@
-const fs = require('fs');
-const path = require('path');
-
-// This points to a local file that will act as our database
-const dbFilePath = path.join(__dirname, '../localDB.json');
-
-// Helper to ensure the database file exists
-const initDB = () => {
-  if (!fs.existsSync(dbFilePath)) {
-    fs.writeFileSync(dbFilePath, JSON.stringify({ faculty: [], subjects: [], rooms: [], timeslots: [], timetable: null }));
-  }
-};
-
-const readDB = () => JSON.parse(fs.readFileSync(dbFilePath, 'utf8'));
-const writeDB = (data) => fs.writeFileSync(dbFilePath, JSON.stringify(data, null, 2));
-
 exports.getAll = async (req, res) => {
   try {
-    initDB();
-    const db = readDB();
-    res.json(db.faculty || []);
+    const db       = req.app.get('db');
+    const snapshot  = await db.collection('faculty').get();
+    res.json(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -26,16 +10,9 @@ exports.getAll = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    initDB();
-    const db = readDB();
-    // We use Date.now() to generate a unique ID, just like Firestore does
-    const newItem = { id: Date.now().toString(), ...req.body }; 
-    
-    if (!db.faculty) db.faculty = [];
-    db.faculty.push(newItem);
-    writeDB(db);
-    
-    res.status(201).json(newItem);
+    const db  = req.app.get('db');
+    const ref = await db.collection('faculty').add(req.body);
+    res.status(201).json({ id: ref.id, ...req.body });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -43,11 +20,8 @@ exports.create = async (req, res) => {
 
 exports.remove = async (req, res) => {
   try {
-    initDB();
-    const db = readDB();
-    db.faculty = db.faculty.filter(item => item.id !== req.params.id);
-    writeDB(db);
-    
+    const db = req.app.get('db');
+    await db.collection('faculty').doc(req.params.id).delete();
     res.json({ message: 'Deleted successfully' });
   } catch (err) {
     res.status(500).json({ error: err.message });
