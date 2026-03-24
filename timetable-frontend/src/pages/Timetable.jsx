@@ -11,18 +11,30 @@ export default function Timetable() {
   const [filter,   setFilter]   = useState('');
 
   useEffect(() => {
-    getTimetable().then(r => { setSchedule(r.data); setLoading(false); });
+    const fetchTimetable = () => {
+      getTimetable()
+        .then(r => { setSchedule(r.data); setLoading(false); })
+        .catch(err => console.error(err));
+    };
+
+    fetchTimetable();
+    const interval = setInterval(fetchTimetable, 3000); // 3 sec polling
+    return () => clearInterval(interval);
   }, []);
 
-  const getCell = (day, period) =>
-    schedule.find(e =>
-      e.day    === day &&
+  const getCell = (day, period) => {
+    const term = filter.toLowerCase();
+    return schedule.find(e =>
+      e.day === day &&
       e.period === period &&
-      (!filter ||
-        e.batch        === filter ||
-        e.faculty_name === filter ||
-        e.room_number  === filter)
+      (!term ||
+        e.batch?.toLowerCase().includes(term) ||
+        e.faculty_name?.toLowerCase().includes(term) ||
+        e.room_number?.toLowerCase().includes(term) ||
+        e.department?.toLowerCase().includes(term) ||
+        e.subject_name?.toLowerCase().includes(term))
     );
+  };
 
   if (loading) return <Spinner />;
 
@@ -31,10 +43,10 @@ export default function Timetable() {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-semibold text-gray-800">Timetable</h1>
         <input
-          placeholder="Filter by batch, faculty, or room..."
+          placeholder="Search by department, batch, subject, faculty or room..."
           value={filter}
           onChange={e => setFilter(e.target.value)}
-          className="border rounded px-3 py-2 text-sm w-72"
+          className="border rounded px-3 py-2 text-sm w-96 shadow-sm focus:ring-2 focus:ring-blue-100 outline-none"
         />
       </div>
       <div className="overflow-x-auto">
@@ -58,9 +70,10 @@ export default function Timetable() {
                       {cell ? (
                         <>
                           <p className="font-medium text-gray-800 text-xs">{cell.subject_name}</p>
-                          <p className="text-gray-500 text-xs">{cell.faculty_name}</p>
-                          <p className="text-gray-400 text-xs">{cell.room_number} · Batch {cell.batch}</p>
-                          <p className="text-gray-300 text-xs">{cell.start_time} – {cell.end_time}</p>
+                          <p className="text-gray-500 text-[11px] leading-tight mt-0.5">{cell.faculty_name}</p>
+                          <p className="text-gray-400 text-[11px] leading-tight">Rm {cell.room_number} · Batch {cell.batch}</p>
+                          {cell.department && <p className="text-blue-500/80 font-bold mt-1 text-[10px] uppercase tracking-wider">{cell.department}</p>}
+                          <p className="text-gray-300 text-[10px] mt-0.5">{cell.start_time} – {cell.end_time}</p>
                         </>
                       ) : (
                         <span className="text-gray-300 text-xs">—</span>
