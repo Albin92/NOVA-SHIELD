@@ -1,12 +1,18 @@
 function runSolver(subjects, rooms, timeslots) {
   const assigned = [];
 
-  const variables = subjects.map(sub => ({
-    subject: sub,
-    domain:  timeslots.flatMap(slot =>
-      rooms.map(room => ({ slot, room }))
-    )
-  }));
+  const variables = [];
+  subjects.forEach(sub => {
+    const hours = parseInt(sub.hours_per_week, 10) || 1;
+    for (let i = 0; i < hours; i++) {
+      variables.push({
+        subject: { ...sub, instance: i },
+        domain: timeslots.flatMap(slot =>
+          rooms.map(room => ({ slot, room }))
+        )
+      });
+    }
+  });
 
   // MRV: most constrained first
   variables.sort((a, b) => a.domain.length - b.domain.length);
@@ -15,9 +21,9 @@ function runSolver(subjects, rooms, timeslots) {
     for (const entry of assigned) {
       const sameTime = entry.slot.id === slot.id;
       if (sameTime) {
-        if (entry.faculty_id === subject.faculty_id?.id) return false; // faculty clash
-        if (entry.batch      === subject.batch)          return false; // batch clash
-        if (entry.room_id    === room.id)                return false; // room clash
+        if (subject.faculty_id?.id && entry.faculty_id === subject.faculty_id.id) return false; // faculty clash
+        if (subject.batch && entry.batch === subject.batch) return false; // batch clash
+        if (entry.room_id === room.id) return false; // room clash
       }
     }
     return true;
