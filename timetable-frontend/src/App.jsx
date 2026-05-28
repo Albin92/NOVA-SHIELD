@@ -7,7 +7,7 @@ import Timetable  from './pages/Timetable';
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <div className="min-h-screen bg-slate-950 text-slate-100 selection:bg-indigo-500 selection:text-white">
         <Navbar />
         <Routes>
