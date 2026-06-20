@@ -47,16 +47,16 @@ function runSolver(subjects, rooms, timeslots) {
         const entry = {
           subject_id: subject.id,
           faculty_id: subject.faculty_id?.id,
-          room_id:    room.id,
-          slot_id:    slot.id,
-          batch:      subject.batch,
-          day:        slot.day,
-          period:     slot.period,
+          room_id: room.id,
+          slot_id: slot.id,
+          batch: subject.batch,
+          day: slot.day,
+          period: slot.period,
           start_time: slot.start_time,
-          end_time:   slot.end_time,
-          subject_name:  subject.name,
-          faculty_name:  subject.faculty_id?.name,
-          room_number:   room.room_number,
+          end_time: slot.end_time,
+          subject_name: subject.name,
+          faculty_name: subject.faculty_id?.name,
+          room_number: room.room_number,
           slot, room
         };
         assigned.push(entry);
@@ -75,18 +75,18 @@ function runSolver(subjects, rooms, timeslots) {
   return {
     success: true,
     schedule: assigned.map(e => ({
-      subject_id:   e.subject_id,
-      faculty_id:   e.faculty_id,
-      room_id:      e.room_id,
-      slot_id:      e.slot_id,
-      batch:        e.batch,
-      day:          e.day,
-      period:       e.period,
-      start_time:   e.start_time,
-      end_time:     e.end_time,
+      subject_id: e.subject_id,
+      faculty_id: e.faculty_id,
+      room_id: e.room_id,
+      slot_id: e.slot_id,
+      batch: e.batch,
+      day: e.day,
+      period: e.period,
+      start_time: e.start_time,
+      end_time: e.end_time,
       subject_name: e.subject_name,
       faculty_name: e.faculty_name,
-      room_number:  e.room_number
+      room_number: e.room_number
     }))
   };
 }

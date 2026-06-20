@@ -4,6 +4,7 @@ import Dashboard  from './pages/Dashboard';
 import Setup      from './pages/Setup';
 import Generate   from './pages/Generate';
 import Timetable  from './pages/Timetable';
+import AcademicHub from './pages/AcademicHub';
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
           <Route path="/setup"     element={<Setup />} />
           <Route path="/generate"  element={<Generate />} />
           <Route path="/timetable" element={<Timetable />} />
+          <Route path="/academic-hub" element={<AcademicHub />} />
         </Routes>
       </div>
     </BrowserRouter>

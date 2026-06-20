@@ -24,7 +24,8 @@ export default function Navbar() {
           { path: '/', label: 'Dashboard' },
           { path: '/setup', label: 'Setup Hub' },
           { path: '/generate', label: 'Generate' },
-          { path: '/timetable', label: 'Timetable Grid' }
+          { path: '/timetable', label: 'Timetable Grid' },
+          { path: '/academic-hub', label: 'Academic Hub' }
         ].map(tab => (
           <Link
             key={tab.path}

@@ -19,3 +19,19 @@ export const deleteTimeslot= (id)     => API.delete(`/timeslots/${id}`);
 
 export const generateTimetable = ()   => API.post('/timetable/generate');
 export const getTimetable      = ()   => API.get('/timetable');
+
+export const getNotes          = ()   => API.get('/notes');
+export const addNote           = (data) => API.post('/notes', data);
+export const deleteNote        = (id) => API.delete(`/notes/${id}`);
+
+export const getQuestionPapers = ()   => API.get('/question-papers');
+export const addQuestionPaper  = (data) => API.post('/question-papers', data);
+export const deleteQuestionPaper = (id) => API.delete(`/question-papers/${id}`);
+
+export const getMarksheets     = ()   => API.get('/marksheets');
+export const addMarksheet      = (data) => API.post('/marksheets', data);
+export const deleteMarksheet   = (id) => API.delete(`/marksheets/${id}`);
+
+export const getAttendanceShortages = () => API.get('/attendance-shortages');
+export const addAttendanceShortage  = (data) => API.post('/attendance-shortages', data);
+export const deleteAttendanceShortage = (id) => API.delete(`/attendance-shortages/${id}`);

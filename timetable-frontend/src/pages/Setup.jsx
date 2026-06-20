@@ -13,12 +13,26 @@ export default function Setup() {
   const [rooms, setRooms]       = useState([]);
   const [timeslots, setTimeslots] = useState([]);
   const [form, setForm]         = useState({});
+  const [error, setError]       = useState(null);
+  const [success, setSuccess]   = useState(null);
+  const [saving, setSaving]     = useState(false);
 
   const refreshAll = () => {
-    getFaculty().then(r => setFaculty(r.data));
-    getSubjects().then(r => setSubjects(r.data));
-    getRooms().then(r => setRooms(r.data));
-    getTimeslots().then(r => setTimeslots(r.data));
+    setError(null);
+    Promise.all([
+      getFaculty(),
+      getSubjects(),
+      getRooms(),
+      getTimeslots()
+    ]).then(([f, s, r, t]) => {
+      setFaculty(f.data);
+      setSubjects(s.data);
+      setRooms(r.data);
+      setTimeslots(t.data);
+    }).catch(err => {
+      const msg = err.response?.data?.error || err.message || 'Failed to connect to backend';
+      setError('⚠️ Cannot reach the server: ' + msg + '. Make sure the backend is running on port 5000.');
+    });
   };
 
   useEffect(() => {
@@ -26,46 +40,62 @@ export default function Setup() {
   }, []);
 
   const handleSubmit = async () => {
-    if (tab === 'faculty')  {
-      const cleanForm = {
-        ...form,
-        subjects_can_teach: form.subjects_can_teach
-          ? form.subjects_can_teach.split(',').map(s => s.trim()).filter(Boolean)
-          : []
-      };
-      await addFaculty(cleanForm);
+    setSaving(true);
+    setError(null);
+    setSuccess(null);
+    try {
+      if (tab === 'faculty')  {
+        const cleanForm = {
+          ...form,
+          subjects_can_teach: form.subjects_can_teach
+            ? form.subjects_can_teach.split(',').map(s => s.trim()).filter(Boolean)
+            : []
+        };
+        await addFaculty(cleanForm);
+      }
+      if (tab === 'subjects') {
+        const cleanForm = {
+          ...form,
+          hours_per_week: parseInt(form.hours_per_week, 10) || 1
+        };
+        await addSubject(cleanForm);
+      }
+      if (tab === 'rooms')    {
+        const cleanForm = {
+          ...form,
+          capacity: parseInt(form.capacity, 10) || 0
+        };
+        await addRoom(cleanForm);
+      }
+      if (tab === 'timeslots') {
+        const cleanForm = {
+          ...form,
+          period: parseInt(form.period, 10) || 1
+        };
+        await addTimeslot(cleanForm);
+      }
+      setForm({});
+      setSuccess('✅ Saved successfully!');
+      refreshAll();
+    } catch (err) {
+      const msg = err.response?.data?.error || err.message || 'Save failed';
+      setError('❌ Error: ' + msg);
+    } finally {
+      setSaving(false);
     }
-    if (tab === 'subjects') {
-      const cleanForm = {
-        ...form,
-        hours_per_week: parseInt(form.hours_per_week, 10) || 1
-      };
-      await addSubject(cleanForm);
-    }
-    if (tab === 'rooms')    {
-      const cleanForm = {
-        ...form,
-        capacity: parseInt(form.capacity, 10) || 0
-      };
-      await addRoom(cleanForm);
-    }
-    if (tab === 'timeslots') {
-      const cleanForm = {
-        ...form,
-        period: parseInt(form.period, 10) || 1
-      };
-      await addTimeslot(cleanForm);
-    }
-    setForm({});
-    refreshAll();
   };
 
   const handleDelete = async (id) => {
-    if (tab === 'faculty')   { await deleteFaculty(id); }
-    if (tab === 'subjects')  { await deleteSubject(id); }
-    if (tab === 'rooms')     { await deleteRoom(id); }
-    if (tab === 'timeslots') { await deleteTimeslot(id); }
-    refreshAll();
+    setError(null);
+    try {
+      if (tab === 'faculty')   { await deleteFaculty(id); }
+      if (tab === 'subjects')  { await deleteSubject(id); }
+      if (tab === 'rooms')     { await deleteRoom(id); }
+      if (tab === 'timeslots') { await deleteTimeslot(id); }
+      refreshAll();
+    } catch (err) {
+      setError('❌ Delete failed: ' + (err.response?.data?.error || err.message));
+    }
   };
 
   const tabs = ['faculty', 'subjects', 'rooms', 'timeslots'];
@@ -80,6 +110,21 @@ export default function Setup() {
         <h1 className="text-3xl font-extrabold text-white mt-4 tracking-tight">Resource Configuration</h1>
         <p className="text-slate-400 text-sm mt-1">Configure your departments, faculty profiles, subjects, room assignments, and scheduling timeslots.</p>
       </div>
+
+      {/* Error / Success banners */}
+      {error && (
+        <div className="mb-6 flex items-start gap-3 p-4 bg-red-950/50 border border-red-800/60 rounded-xl text-red-300 text-sm">
+          <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+          <span>{error}</span>
+          <button onClick={() => setError(null)} className="ml-auto text-red-400 hover:text-white">✕</button>
+        </div>
+      )}
+      {success && (
+        <div className="mb-6 flex items-center gap-3 p-4 bg-emerald-950/50 border border-emerald-800/60 rounded-xl text-emerald-300 text-sm">
+          <span>{success}</span>
+          <button onClick={() => setSuccess(null)} className="ml-auto text-emerald-400 hover:text-white">✕</button>
+        </div>
+      )}
 
       {/* Tabs */}
       <div className="flex gap-2 mb-8 bg-slate-900/60 p-1.5 rounded-xl border border-slate-800/60 max-w-md">
@@ -271,9 +316,10 @@ export default function Setup() {
 
             <button
               onClick={handleSubmit}
-              className="w-full mt-6 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 px-4 rounded-xl text-xs uppercase tracking-wider shadow-lg shadow-indigo-600/10 transition duration-300"
+              disabled={saving}
+              className="w-full mt-6 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-bold py-3.5 px-4 rounded-xl text-xs uppercase tracking-wider shadow-lg shadow-indigo-600/10 transition duration-300"
             >
-              Save Resource
+              {saving ? 'Saving...' : 'Save Resource'}
             </button>
           </div>
         </div>
