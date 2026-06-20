@@ -1,8 +1,8 @@
 exports.getAll = async (req, res) => {
   try {
-    const db      = req.app.get('db');
+    const db = req.app.get('db');
     const snapshot = await db.collection('faculty').get();
-    const data     = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     res.json(data);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -11,7 +11,7 @@ exports.getAll = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    const db  = req.app.get('db');
+    const db = req.app.get('db');
     const ref = await db.collection('faculty').add(req.body);
     res.status(201).json({ id: ref.id, ...req.body });
   } catch (err) {
